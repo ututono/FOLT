@@ -141,16 +141,17 @@ def svm_train(x_train, y_train):
     # svr=svm.SVC(verbose=True)
     # parameters={
     #     'kernel':('linear','rbf'),
-    #     'C':[0.5,1,2,4,6],
-    #     'gamma':[0.125,0.25,0.5,1,2]
+    #     'C':[1e-14,1e-13,1e-12,1e-11,1e-10,1e-9,1e-8,1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1,0.5,1,2,4,6],
+    #     "gamma": [1e-14,1e-13,1e-12,1e-11,1e-10,1e-9,1e-8, 1e-7, 1e-6, 1e-5]
     # }
     # clf=GridSearchCV(svr,parameters,scoring='f1')
     # clf.fit(x_train, y_train,)
     # print('The best parameters are: ')
     # print(clf.best_params_)
-    # # {'C': 0.5, 'gamma': 0.125, 'kernel': 'linear'}
 
-    clf=svm.SVC(kernel='linear',C=0.5,gamma=0.125,verbose=True)
+    # {'C': 1e-08, 'gamma': 1e-08, 'kernel': 'linear'}
+
+    clf=svm.SVC(kernel='linear',C=1e-08,gamma=1e-08,verbose=True, probability=True)
     clf.fit(x_train,y_train)
 
     joblib.dump(clf,'src/model/svm_word2vec.pkl')
@@ -166,7 +167,9 @@ if __name__ == '__main__':
     # Load word2vec model
     word2ver=Word2Vec.load('src/model/Word2vec_model.pkl')
     print(word2ver.wv.index_to_key)
-    print(word2ver.wv.similar_by_word('peopl'))
+    print(word2ver.wv.similar_by_word('muslim'))
+
+
     x_train, y_train, x_test=getData(word2ver)
 
     print(y_train)
@@ -175,7 +178,7 @@ if __name__ == '__main__':
 
     svm_model=joblib.load('src/model/svm_word2vec.pkl')
 
-    y_pred=svm_model.predict(x_train)
+    y_pred=svm_model.predict_proba(x_train)
 
     print(y_pred)
 
